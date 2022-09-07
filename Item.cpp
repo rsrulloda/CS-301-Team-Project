@@ -1,7 +1,7 @@
 // Study Group 7 (Alex Milanez, John Edwin Karel Delgado, Ronell Sean Rulloda)
 
 #include "Item.h"
-#include <iostream>
+#include <utility>
 
 Item::Item() {
     setDescription("");
@@ -11,7 +11,7 @@ Item::Item() {
 }
 
 Item::Item(string description, int qty, double upc, double price) {
-    setDescription(description);
+    setDescription(std::move(description));
     setUPC(upc);
     setQty(qty);
     setPrice(price);
@@ -22,10 +22,10 @@ string Item::getDescription() {
 }
 
 void Item::setDescription(string description) {
-    this->description = std::move(description);
+    this->description = description;
 }
 
-int Item::getQty(){
+int Item::getQty() const{
     return qty;
 }
 
