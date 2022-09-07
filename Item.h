@@ -18,7 +18,7 @@ public:
     string getDescription();
     void setDescription(string description);
 
-    int getQty();
+    int getQty() const;
     void setQty(int qty);
 
     double getUPC() const;
@@ -29,9 +29,9 @@ public:
 
 private:
     string description;
-    int qty;
-    double upc;
-    double price;
+    int qty{};
+    double upc{};
+    double price{};
 };
 
 
