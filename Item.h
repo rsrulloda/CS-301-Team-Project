@@ -12,22 +12,26 @@ public:
     // Constructors
     Item();
 
-    Item(string description, int UPC, int qty, double price);
+    Item(string description, int qty, double upc,double price);
 
     // Getters & Setters
     string getDescription();
     void setDescription(string description);
 
-    int getUPC();
-    void setUPC(int UPC);
-
     int getQty();
-    void setQty(int Qty);
+    void setQty(int qty);
 
-    double getPrice();
+    double getUPC() const;
+    void setUPC(double upc);
+
+    double getPrice() const;
     void setPrice(double price);
 
 private:
+    string description;
+    int qty;
+    double upc;
+    double price;
 };
 
 
