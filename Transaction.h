@@ -18,10 +18,10 @@ public:
     Transaction(int transactionID, int associateID, string cashier);
 
     // Getters & Setters
-    int getTransactionID();
+    int getTransactionID() const;
     void setTransactionID(int transactionID);
 
-    int getAssociateID();
+    int getAssociateID() const;
     void setAssociateID(int associateID);
 
     string getCashier();
@@ -31,6 +31,9 @@ public:
     void Print();
 
 private:
+    int transactionID{};
+    int associateID{};
+    string cashier;
 };
 
 
