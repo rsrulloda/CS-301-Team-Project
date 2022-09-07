@@ -1,6 +1,4 @@
-//
-// Created by ronel on 9/6/2022.
-//
+// Study Group 7 (Alex Milanez, John Edwin Karel Delgado, Ronell Sean Rulloda)
 
 #include "Item.h"
 
