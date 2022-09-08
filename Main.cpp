@@ -21,10 +21,14 @@ string login(const string& filename, const string& employeeID) {
             file >> tempEmployeeID;
         } else {
             file >> tempCashier;
-            if(tempEmployeeID==employeeID) return tempCashier;
+            if(tempEmployeeID==employeeID) {
+                cout << "Logged In" << endl;
+                return tempCashier;
+            }
         }
     }
-    return "No Matching Employee ID\n";
+    cout << "No Matching Employee ID\n";
+    return "";
 }
 
 void newTransaction(const string& cashier, const string& employeeID) {
