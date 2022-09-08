@@ -20,14 +20,14 @@ public:
     // Constructors
     Transaction();
 
-    Transaction(int transactionID, int associateID, string cashier, TRANSACTION_TYPE transactionType);
+    Transaction(int transactionID, string associateID, string cashier, TRANSACTION_TYPE transactionType);
 
     // Getters & Setters
     int getTransactionID() const;
     void setTransactionID(int transactionID);
 
-    int getAssociateID() const;
-    void setAssociateID(int associateID);
+    string getAssociateID() const;
+    void setAssociateID(string associateID);
 
     string getCashier();
     void setCashier(string cashier);
@@ -40,7 +40,7 @@ public:
 
 private:
     int transactionID{};
-    int associateID{};
+    string associateID{};
     string cashier;
     TRANSACTION_TYPE transactionType;
 };

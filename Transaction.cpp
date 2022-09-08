@@ -7,13 +7,14 @@
 
 Transaction::Transaction() {
     setTransactionID(0);
-    setAssociateID(0);
+    setAssociateID("");
     setCashier("");
+    setTransactionType(CASH);
 }
 
-Transaction::Transaction(int transactionID, int associateID, string cashier, TRANSACTION_TYPE transactionType) {
+Transaction::Transaction(int transactionID, string associateID, string cashier, TRANSACTION_TYPE transactionType) {
     setTransactionID(transactionID);
-    setAssociateID(associateID);
+    setAssociateID(std::move(associateID));
     setCashier(std::move(cashier));
     setTransactionType(transactionType);
 }
@@ -30,16 +31,12 @@ void Transaction::setTransactionID(int transactionID) {
     this->transactionID = transactionID;
 }
 
-int Transaction::getAssociateID() const {
+string Transaction::getAssociateID() const {
     return associateID;
 }
 
-void Transaction::setAssociateID(int associateID) {
-    if(associateID<0) {
-        throw "Invalid Associate ID";
-    }
-
-    this->associateID = associateID;
+void Transaction::setAssociateID(string associateID) {
+    this->associateID = std::move(associateID);
 }
 
 string Transaction::getCashier() {
@@ -47,7 +44,7 @@ string Transaction::getCashier() {
 }
 
 void Transaction::setCashier(string cashier) {
-    this->cashier = cashier;
+    this->cashier = std::move(cashier);
 }
 
 TRANSACTION_TYPE Transaction::getTransactionType() {
@@ -59,7 +56,7 @@ void Transaction::setTransactionType(TRANSACTION_TYPE transactionType) {
 }
 
 void Transaction::print() {
-    cout << STORE_NAME << endl << endl;
+    cout << "\n" << STORE_NAME << endl << endl;
     cout << "Visit Us At " << WEBSITE << endl << endl;
 
     cout << "STORE: " << STORE_ID << "\t";
@@ -68,7 +65,7 @@ void Transaction::print() {
     cout << "ASSOCIATE: " << getAssociateID() << endl;
 
     cout << "-----------------------------" << endl;
-    cout << "CUSTOMER RECEIPT COPY" << endl;
+    cout << "CUSTOMER RECEIPT COPY" << endl << endl;
 
     // Insert Items Here
     cout << "AD BOOST UNCAGED WHT/SIL 0\t139.99" << endl; // EXAMPLE
