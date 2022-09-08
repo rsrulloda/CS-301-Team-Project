@@ -22,7 +22,7 @@ string Item::getDescription() {
 }
 
 void Item::setDescription(string description) {
-    this->description = description;
+    this->description = std::move(description);
 }
 
 int Item::getQty() const{
