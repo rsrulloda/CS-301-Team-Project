@@ -13,14 +13,14 @@ const string ADDRESS = "123 STREET AVE CITY, STATE";
 const string PHONE = "012-345-6789";
 const int STORE_ID = 12345;
 const int REGISTER_ID = 001;
-enum TRANSACTION_TYPE {CREDIT, DEBIT, CASH};
+const double SALES_TAX = 0.1025;
 
 class Transaction {
 public:
     // Constructors
     Transaction();
 
-    Transaction(int transactionID, string associateID, string cashier, TRANSACTION_TYPE transactionType);
+    Transaction(int transactionID, string associateID, string cashier);
 
     // Getters & Setters
     int getTransactionID() const;
@@ -32,17 +32,20 @@ public:
     string getCashier();
     void setCashier(string cashier);
 
-    TRANSACTION_TYPE getTransactionType();
-    void setTransactionType(TRANSACTION_TYPE transactionType);
+    double getSubtotal();
+    double getTotal();
 
-    // Print Function
-    void print();
+    // Functions
+    static void scan(double upc);
+
+    void itemList();
+
+    void print(const string& paymentType);
 
 private:
     int transactionID{};
     string associateID{};
     string cashier;
-    TRANSACTION_TYPE transactionType;
 };
 
 

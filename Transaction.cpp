@@ -1,22 +1,22 @@
 // Study Group 7 (Alex Milanez, John Edwin Karel Delgado, Ronell Sean Rulloda)
 
 #include "Transaction.h"
+#include <Item.h>
 
 #include <utility>
 #include <iostream>
+#include <fstream>
 
 Transaction::Transaction() {
     setTransactionID(0);
     setAssociateID("");
     setCashier("");
-    setTransactionType(CASH);
 }
 
-Transaction::Transaction(int transactionID, string associateID, string cashier, TRANSACTION_TYPE transactionType) {
+Transaction::Transaction(int transactionID, string associateID, string cashier) {
     setTransactionID(transactionID);
     setAssociateID(std::move(associateID));
     setCashier(std::move(cashier));
-    setTransactionType(transactionType);
 }
 
 int Transaction::getTransactionID() const {
@@ -47,15 +47,58 @@ void Transaction::setCashier(string cashier) {
     this->cashier = std::move(cashier);
 }
 
-TRANSACTION_TYPE Transaction::getTransactionType() {
-    return transactionType;
+double Transaction::getSubtotal() {
+
 }
 
-void Transaction::setTransactionType(TRANSACTION_TYPE transactionType) {
-    this->transactionType = transactionType;
+double Transaction::getTotal() {
+    double total = getSubtotal() + getSubtotal()*SALES_TAX;
+    return total;
 }
 
-void Transaction::print() {
+
+void Transaction::scan(double upc) {
+    int itemCount = 0;
+    double tempUPC;
+    int tempQty = 0;
+    double tempPrice;
+    string tempDesc;
+    Item tempItem;
+
+    // Find item in inventory
+    std::fstream file1("../Database/inventory.csv",ios::out | ios::app);
+    if(!file1.is_open()) throw std::invalid_argument("File Failed to Open");
+    file1 >> itemCount;
+
+    for(int i=0;i<itemCount*3;i++) {
+        cin >> tempUPC;
+        if(upc == tempUPC) {
+            cin >> tempQty >> tempPrice >> tempDesc;
+        }
+        if(tempQty==0) cout << "UPC not found";
+    }
+
+    tempItem.setQty(tempQty);
+    tempItem.setPrice(tempPrice);
+    tempItem.setDescription(tempDesc);
+
+    file1.close();
+
+    // Save item to temporary transaction
+    std::fstream file2("../Database/temp.csv",ios::out | ios::app);
+    if(!file2.is_open()) throw std::invalid_argument("File Failed to Open");
+
+    file2 << tempItem.getQty() << ", "
+            << tempItem.getPrice() << ", "
+            << tempItem.getDescription() << "\n";
+
+    file2.close();
+}
+
+void Transaction::itemList() {
+}
+
+void Transaction::print(const string& paymentType) {
     cout << "\n" << STORE_NAME << endl << endl;
     cout << "Visit Us At " << WEBSITE << endl << endl;
 
@@ -68,19 +111,31 @@ void Transaction::print() {
     cout << "CUSTOMER RECEIPT COPY" << endl << endl;
 
     // Insert Items Here
-    cout << "AD BOOST UNCAGED WHT/SIL 0\t139.99" << endl; // EXAMPLE
+    itemList();
 
-    cout << "-----------------------------" << endl;
-    cout << "SUBTOTAL: " << endl;
+    cout << "\n=============================" << endl;
+    cout << "SUBTOTAL: " << getSubtotal() << endl;
     cout << "SALES TAX: " << endl;
-    cout << "TOTAL: " << endl;
-    cout << "-----------------------------" << endl;
+    cout << "TOTAL: " << getTotal() << endl;
+    cout << "=============================" << endl;
     cout << "AMOUNT TENDERED" << endl;
 
-    if(getTransactionType()==CASH) {
-        cout << "cash" << endl; // Implement Later
+    if(paymentType=="CASH") {
+        cout << "-----------------------------" << endl;
+        cout << "Cash                     0.00" << endl << endl;
+        cout << "TOTAL PAYMENT            0.00" << endl;
+        cout << "CHANGE                   0.00" << endl;
     } else {
-        cout << "credit/debit" << endl; // Implement Later
+        cout << "VISA                     0.00" << endl;
+        cout << "   ACCT: ************1234" << endl;
+        cout << "   EXP: ****" << endl;
+        cout << "   APPROVAL: 055181" << endl;
+        cout << "   AID: a000000031010" << endl;
+        cout << "   ARQC: 651316a19e2cf1f7" << endl;
+        cout << "   TVR: 0880008000" << endl;
+        cout << "   TSI: f800" << endl;
+        cout << "   CARD INSERTED" << endl;
+        cout << "TOTAL PAYMENT            0.00" << endl;
     }
 
     cout << "-----------------------------" << endl;
@@ -92,4 +147,6 @@ void Transaction::print() {
     cout << "-----------------------------" << endl;
     cout << ADDRESS << endl;
     cout << PHONE << endl;
+
+    remove("../Database/temp.csv");
 }
