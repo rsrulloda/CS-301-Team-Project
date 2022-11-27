@@ -19,8 +19,8 @@ Study Group 7 (Alex Milanez, John Edwin Karel Delgado, Ronell Sean Rulloda)
      * Total Price
 3. Your Desirable Target
    * Types of Transactions
-     * Credit/Debit
-     * Cash
+     * ~~Credit/Debit~~
+     * ~~Cash~~
    * Application has a GUI
 
 4. Your High Target
