@@ -2,6 +2,7 @@
 
 #include "Transaction.h"
 #include <Item.h>
+#include <list>
 
 #include <utility>
 #include <iostream>
@@ -13,7 +14,7 @@ Transaction::Transaction() {
     setCashier("");
 }
 
-Transaction::Transaction(int transactionID, string associateID, string cashier) {
+Transaction::Transaction(int transactionID, string associateID, string cashier, const list<Item>& itemList) {
     setTransactionID(transactionID);
     setAssociateID(std::move(associateID));
     setCashier(std::move(cashier));
@@ -48,7 +49,7 @@ void Transaction::setCashier(string cashier) {
 }
 
 double Transaction::getSubtotal() {
-
+    return 1;
 }
 
 double Transaction::getTotal() {
@@ -70,7 +71,7 @@ void Transaction::scan(double upc) {
     if(!file1.is_open()) throw std::invalid_argument("File Failed to Open");
     file1 >> itemCount;
 
-    for(int i=0;i<itemCount*3;i++) {
+    for(int i=0;i<itemCount*4;i++) {
         cin >> tempUPC;
         if(upc == tempUPC) {
             cin >> tempQty >> tempPrice >> tempDesc;
@@ -95,7 +96,10 @@ void Transaction::scan(double upc) {
     file2.close();
 }
 
-void Transaction::itemList() {
+void Transaction::itemList(const list<Item>& itemList) {
+    for(int i=0;i<itemList.size();i++) {
+
+    }
 }
 
 void Transaction::print(const string& paymentType) {
@@ -111,7 +115,7 @@ void Transaction::print(const string& paymentType) {
     cout << "CUSTOMER RECEIPT COPY" << endl << endl;
 
     // Insert Items Here
-    itemList();
+    //itemList();
 
     cout << "\n=============================" << endl;
     cout << "SUBTOTAL: " << getSubtotal() << endl;

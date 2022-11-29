@@ -3,7 +3,9 @@
 #ifndef CS_301_TEAM_PROJECT_TRANSACTION_H
 #define CS_301_TEAM_PROJECT_TRANSACTION_H
 
+#include <Item.h>
 #include <string>
+#include <list>
 
 using namespace std;
 
@@ -20,7 +22,7 @@ public:
     // Constructors
     Transaction();
 
-    Transaction(int transactionID, string associateID, string cashier);
+    Transaction(int transactionID, string associateID, string cashier, const list<Item>& itemList);
 
     // Getters & Setters
     int getTransactionID() const;
@@ -38,7 +40,7 @@ public:
     // Functions
     static void scan(double upc);
 
-    void itemList();
+    void itemList(const list<Item>& itemList);
 
     void print(const string& paymentType);
 
