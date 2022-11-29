@@ -4,17 +4,17 @@
 #include <utility>
 
 Item::Item() {
-    setDescription("");
     setUPC(000000000000);
     setQty(0);
     setPrice(0);
+    setDescription("");
 }
 
-Item::Item(string description, int qty, double upc, double price) {
-    setDescription(std::move(description));
+Item::Item(double upc, int qty, double price, string description) {
     setUPC(upc);
     setQty(qty);
     setPrice(price);
+    setDescription(std::move(description));
 }
 
 string Item::getDescription() {

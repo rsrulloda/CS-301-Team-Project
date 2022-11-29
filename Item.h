@@ -12,7 +12,7 @@ public:
     // Constructors
     Item();
 
-    Item(string description, int qty, double upc,double price);
+    Item(double upc, int qty, double price, string description);
 
     // Getters & Setters
     string getDescription();
