@@ -48,13 +48,13 @@ void Transaction::setCashier(string cashier) {
     this->cashier = std::move(cashier);
 }
 
-double Transaction::getSubtotal() {
-    return 1;
+double Transaction::getSubtotal(list<Item> tempList) {
+
 }
 
-double Transaction::getTotal() {
-    double total = getSubtotal() + getSubtotal()*SALES_TAX;
-    return total;
+double Transaction::getTotal(list<Item> tempList) {
+//    double total = getSubtotal(std::move(tempList)) + getSubtotal(std::move(tempList))*SALES_TAX;
+//    return total;
 }
 
 
@@ -96,13 +96,13 @@ void Transaction::scan(double upc) {
     file2.close();
 }
 
-void Transaction::itemList(const list<Item>& itemList) {
-    for(int i=0;i<itemList.size();i++) {
-
+void Transaction::itemList(list<Item> tempList) {
+    for(int i=0;i<tempList.size();i++) {
+        cout << tempList.front().getDescription() << "\t\t\t" << tempList.front().getPrice() << endl;
     }
 }
 
-void Transaction::print(const string& paymentType) {
+void Transaction::print(const string& paymentType, list<Item> tempList) {
     cout << "\n" << STORE_NAME << endl << endl;
     cout << "Visit Us At " << WEBSITE << endl << endl;
 
@@ -115,12 +115,12 @@ void Transaction::print(const string& paymentType) {
     cout << "CUSTOMER RECEIPT COPY" << endl << endl;
 
     // Insert Items Here
-    //itemList();
+    itemList(tempList);
 
     cout << "\n=============================" << endl;
-    cout << "SUBTOTAL: " << getSubtotal() << endl;
+    cout << "SUBTOTAL: " << getSubtotal(std::move(tempList)) << endl;
     cout << "SALES TAX: " << endl;
-    cout << "TOTAL: " << getTotal() << endl;
+    cout << "TOTAL: " << getTotal(std::move(tempList)) << endl;
     cout << "=============================" << endl;
     cout << "AMOUNT TENDERED" << endl;
 

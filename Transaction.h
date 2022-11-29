@@ -34,15 +34,15 @@ public:
     string getCashier();
     void setCashier(string cashier);
 
-    double getSubtotal();
-    double getTotal();
+    double getSubtotal(list<Item> tempList);
+    double getTotal(list<Item> tempList);
 
     // Functions
     static void scan(double upc);
 
-    void itemList(const list<Item>& itemList);
+    void itemList(list<Item> tempList);
 
-    void print(const string& paymentType);
+    void print(const string& paymentType, list<Item> tempList);
 
 private:
     int transactionID{};
