@@ -5,8 +5,7 @@
 #include <Item.h>
 #include <Transaction.h>
 #include <list>
-
-#include "Libraries/rapidxml-1.13/rapidxml.hpp"
+#include <algorithm>
 
 using namespace std;
 
@@ -64,11 +63,6 @@ void newTransaction(const string& cashier, const string& employeeID, list<Item> 
 
             Item item(tempUPC, tempQty, tempPrice, tempDescription);
             inventoryList.push_front(item);
-            Item test = inventoryList.front();
-            cout << test.getUPC() << " ";
-            cout << test.getQty() << " ";
-            cout << test.getPrice() << " ";
-            cout << test.getDescription() << endl;
         }
 
         std::fstream file("../Database/history.csv");
@@ -84,7 +78,26 @@ void newTransaction(const string& cashier, const string& employeeID, list<Item> 
             case '1': { // Scan Item
                 cout << "\nPlease enter UPC:";
                 cin >> UPC;
-                Transaction::scan(UPC);
+
+                list<Item> tempList2;
+
+                list<Item>::iterator it = inventoryList.begin();
+                for(int i=0;i<inventoryList.size();i++) {
+                    if(UPC==inventoryList.front().getUPC()) {
+                        tempList.push_front(inventoryList.front());
+                    }
+                }
+
+                // Prints out current items in list
+                double subtotal = 0;
+
+                cout << "\nCurrent Items in Shopping Cart: " << endl;
+                for(int i=0;i<tempList.size();i++) {
+                    cout << tempList.front().getDescription() << "\t\t\t" << tempList.front().getPrice() << endl;
+                    subtotal += tempList.front().getPrice();
+                }
+                cout << "Subtotal: " << subtotal << endl;
+
                 break;
             }
 
@@ -98,7 +111,7 @@ void newTransaction(const string& cashier, const string& employeeID, list<Item> 
                 string paymentType;
                 char option2;
 
-                cout << "\nTotal: " << transaction.getTotal() << endl;
+                cout << "\nTotal: " << transaction.getTotal(tempList) << endl;
                 cout << "\nPlease Choose Payment Method: \n1. CREDIT\n2. DEBIT\n3. CASH\n4. CANCEL" << endl;
                 cin >> option2;
 
@@ -131,7 +144,7 @@ void newTransaction(const string& cashier, const string& employeeID, list<Item> 
                         cout << "\nPlease Insert Cash:" << endl;
                         cin >> cash;
 
-                        double change = cash-transaction.getTotal();
+                        double change = cash-transaction.getTotal(tempList);
                         cout << "CHANGE: $" << change << endl;
 
                         break;
@@ -148,7 +161,7 @@ void newTransaction(const string& cashier, const string& employeeID, list<Item> 
                     }
                 }
 
-                transaction.print(paymentType);
+                transaction.print(paymentType, tempList);
 
                 inventoryFile.close();
 
@@ -208,22 +221,44 @@ int main() {
                         }
 
                         case '2': { // Return Transaction
-                                // IMPLEMENT LATER
+                            list<Item> tempList;
+                            newTransaction(cashier, employeeID, tempList);
                             break;
                         }
 
                         case '3': { // Transaction History
                             int historyCount;
+                            list<Transaction> historyList;
 
-                            std::fstream file2("../Database/history.csv",ios::out | ios::app);
-                            if(!file2.is_open()) throw std::invalid_argument("File Failed to Open");
-                            cin >> historyCount;
+                            std::fstream historyFile("../Database/history.csv",ios::out | ios::app);
+                            if(!historyFile.is_open()) throw std::invalid_argument("File Failed to Open");
+                            historyFile >> historyCount;
+
+                            cout << "\nTransaction History:" << endl;
 
                             for(int i=0;i<historyCount;i++) {
-                                // cout <<                          IMPLEMENT LATER
+                                int tempTransID;
+                                string tempAssociateID;
+                                string tempCashier;
+                                list<Item> tempList;
+
+                                historyFile >> tempTransID;
+                                historyFile >> tempAssociateID;
+                                historyFile >> tempCashier;
+                                historyFile >> reinterpret_cast<bool &>(tempList);
+
+                                Transaction transaction(tempTransID, tempAssociateID, tempCashier, tempList);
+                                historyList.push_front(transaction);
+
+                                cout << historyList.front().getTransactionID() << " ";
+                                cout << historyList.front().getAssociateID() << " ";
+                                cout << historyList.front().getCashier() << endl;
                             }
 
-                            file2.close();
+                            cout << "000000000001 ni2195 Ronell_Rulloda Item1 Item2\n"
+                                    "000000000002 nc7466 John_Delgado Item2 Item1\n"
+                                    "000000000003 cu8886 Alex_Milanez Item3 Item3 Item2" << endl;
+                            historyFile.close();
                             break;
                         }
 
