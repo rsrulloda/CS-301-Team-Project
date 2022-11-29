@@ -4,6 +4,7 @@
 #include <fstream>
 #include <Item.h>
 #include <Transaction.h>
+#include <list>
 
 #include "Libraries/rapidxml-1.13/rapidxml.hpp"
 
@@ -24,7 +25,7 @@ string login(const string& filename, const string& employeeID) {
         } else {
             file >> tempCashier;
             if(tempEmployeeID==employeeID) {
-                cout << "Logged In" << endl;
+                cout << "\nLogged In";
                 return tempCashier;
             }
         }
@@ -33,32 +34,67 @@ string login(const string& filename, const string& employeeID) {
     return "";
 }
 
-void newTransaction(const string& cashier, const string& employeeID) {
+void processPayment() {}
+
+void newTransaction(const string& cashier, const string& employeeID, list<Item> tempList) { // STEP D
     int transactionCount = 0;
     int UPC;
     char option;
     bool loop = true;
 
     while (loop) {
+        // Loads inventory.csv to list data structure
+        int inventoryCount;
+        list<Item> inventoryList;
+
+        std::fstream inventoryFile("../Database/inventory.csv");
+        if(!inventoryFile.is_open()) throw std::invalid_argument("File Failed to Open");
+        inventoryFile >> inventoryCount;
+
+        for(int i=0;i<inventoryCount;i++) {
+            double tempUPC;
+            int tempQty;
+            double tempPrice;
+            string tempDescription;
+
+            inventoryFile >> tempUPC;
+            inventoryFile >> tempQty;
+            inventoryFile >> tempPrice;
+            inventoryFile >> tempDescription;
+
+            Item item(tempUPC, tempQty, tempPrice, tempDescription);
+            inventoryList.push_front(item);
+            Item test = inventoryList.front();
+            cout << test.getUPC() << " ";
+            cout << test.getQty() << " ";
+            cout << test.getPrice() << " ";
+            cout << test.getDescription() << endl;
+        }
+
         std::fstream file("../Database/history.csv");
         if(!file.is_open()) throw std::invalid_argument("File Failed to Open");
         file >> transactionCount;
-        transactionCount = 1;
-        Transaction transaction(transactionCount, employeeID, cashier);
+        Transaction transaction(transactionCount, employeeID, cashier, tempList);
         file.close();
 
-        cout << "\nPlease Select an Option:\n1. Scan\n2. Print\n3. Exit" << endl;
+        cout << "\nPlease Select an Option:\n1. Scan\n2. Remove\n3. Print\n4. Exit" << endl;
         cin >> option;
 
         switch (option) {
-            case '1': { // Scan
+            case '1': { // Scan Item
                 cout << "\nPlease enter UPC:";
                 cin >> UPC;
-                transaction.scan(UPC);
+                Transaction::scan(UPC);
                 break;
             }
 
-            case '2': { // Print Receipt
+            case '2': { // Remove Item
+                cout << "\nPlease enter UPC:";
+                cin >> UPC;
+                break;
+            }
+
+            case '3': { // Print Receipt
                 string paymentType;
                 char option2;
 
@@ -114,6 +150,8 @@ void newTransaction(const string& cashier, const string& employeeID) {
 
                 transaction.print(paymentType);
 
+                inventoryFile.close();
+
                 std::ofstream file2("../Database/history.csv");
                 if(!file2.is_open()) throw std::invalid_argument("File Failed to Open");
                 file2 << transactionCount;
@@ -122,7 +160,7 @@ void newTransaction(const string& cashier, const string& employeeID) {
                 break;
             }
 
-            case '3': { // Exit
+            case '4': { // Exit
                 cout << "\nExited" << endl;
                 loop = false;
                 break;
@@ -137,6 +175,8 @@ void newTransaction(const string& cashier, const string& employeeID) {
 }
 
 int main() {
+    // Loads history.csv to list data structure
+    list<Transaction> transactionList;
 
     int option;
     bool appOn = true;
@@ -145,7 +185,7 @@ int main() {
         cout << "Welcome! Please Select an Option:\n1. Login\n2. Exit" << endl;
         cin >> option;
 
-        switch (option) {
+        switch (option) { // STEP A
             case 1: { // Login
                 string employeeID;
                 cout << "\nPlease enter employee ID:" << endl;
@@ -155,17 +195,24 @@ int main() {
                 char option2;
                 bool loggedIn = true;
 
-                while (loggedIn) {
-                    cout << "\nPlease Select an Option:\n1. New Transaction\n2. Transaction History\n3. Logout" << endl;
+                while (loggedIn) { // STEP B
+                    cout << "\nWelcome " << cashier << "!" << endl;
+                    cout << "\nPlease Select an Option:\n1. New Transaction\n2. Return Transaction\n3. Transaction History\n4. Logout" << endl;
                     cin >> option2;
 
                     switch (option2) {
                         case '1': { // New Transaction
-                            newTransaction(cashier, employeeID);
+                            list<Item> tempList;
+                            newTransaction(cashier, employeeID, tempList);
                             break;
                         }
 
-                        case '2': { // Transaction History
+                        case '2': { // Return Transaction
+                                // IMPLEMENT LATER
+                            break;
+                        }
+
+                        case '3': { // Transaction History
                             int historyCount;
 
                             std::fstream file2("../Database/history.csv",ios::out | ios::app);
@@ -180,7 +227,7 @@ int main() {
                             break;
                         }
 
-                        case '3': { // Logout
+                        case '4': { // Logout
                             cout << "\nLogged Out" << endl;
                             loggedIn = false;
                             break;
